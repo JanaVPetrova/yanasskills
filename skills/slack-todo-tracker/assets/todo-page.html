@@ -1,0 +1,445 @@
+<title>{{PAGE_TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --fg:#1b2230; --muted:#5f6b7d; --line:#dde2ea;
+  --accent:#2f5bd3; --accent-ink:#ffffff; --draft-bg:#f1f4fb;
+  --ok:#1f7a4d; --ok-bg:#e3f3ea; --warn:#9a5b00; --warn-bg:#fdf0d9; --bad:#b42318; --bad-bg:#fde7e5; --idle:#5f6b7d; --idle-bg:#eceff4;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --surface:#1a2029; --fg:#e4e8ef; --muted:#97a2b3; --line:#2b333f;
+  --accent:#7d9cf5; --accent-ink:#0f1420; --draft-bg:#202838;
+  --ok:#5fd09a; --ok-bg:#163326; --warn:#f0b75a; --warn-bg:#3a2b12; --bad:#ff8a80; --bad-bg:#3d1a18; --idle:#a7b1c1; --idle-bg:#262d38; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161d; --surface:#1a2029; --fg:#e4e8ef; --muted:#97a2b3; --line:#2b333f;
+  --accent:#7d9cf5; --accent-ink:#0f1420; --draft-bg:#202838;
+  --ok:#5fd09a; --ok-bg:#163326; --warn:#f0b75a; --warn-bg:#3a2b12; --bad:#ff8a80; --bad-bg:#3d1a18; --idle:#a7b1c1; --idle-bg:#262d38; color-scheme:dark}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:28px 48px;display:grid;gap:32px}
+header{display:grid;gap:6px}
+.hrow{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px}
+h1{font-size:22px;font-weight:600;margin:0;text-wrap:balance}
+h2{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.shead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:10px}
+.meta{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.meta.err{color:var(--bad)}
+.scope{font-size:13px;color:var(--muted);max-width:68ch}
+a{color:var(--accent)}
+.list{display:grid;gap:8px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-start}
+.item .body{flex:1 1 320px;min-width:0;display:grid;gap:3px}
+.item .what{font-weight:500;overflow-wrap:anywhere}
+.item .sub{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.item .why{font-size:13px;color:var(--fg);opacity:.85;overflow-wrap:anywhere}
+.kind{font-family:var(--mono);font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;margin-top:2px}
+.k-urgent{background:var(--bad-bg);color:var(--bad)}
+.k-todo{background:var(--warn-bg);color:var(--warn)}
+.k-fyi{background:var(--ok-bg);color:var(--ok)}
+.k-done{background:var(--idle-bg);color:var(--idle)}
+.k-scope{background:var(--idle-bg);color:var(--idle)}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:13px;font-weight:500;border-radius:6px;padding:6px 12px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.link{border:0;background:none;padding:0;color:var(--accent);font-size:13px}
+button.small{font-size:12px;padding:3px 10px}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.empty{color:var(--muted);font-size:14px;padding:14px;border:1px dashed var(--line);border-radius:8px}
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{font-size:12px;padding:4px 10px;border-radius:999px}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+#q{font:inherit;font-size:13px;padding:5px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);min-width:0;flex:1 1 160px;max-width:240px}
+.done .item{padding:10px 14px}
+.item.fyi{background:transparent}
+.item.fyi .what{font-weight:400}
+.fyisep{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:12px}
+.done .what{font-weight:400}
+.more{display:flex;justify-content:center;margin-top:8px}
+summary.arch{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* Draft reply */
+details.draft{margin-top:6px;border:1px solid var(--line);border-radius:6px;background:var(--draft-bg)}
+details.draft>summary{cursor:pointer;font-size:13px;font-weight:500;color:var(--accent);padding:6px 10px;list-style:none;display:flex;align-items:center;gap:6px}
+details.draft>summary::-webkit-details-marker{display:none}
+details.draft>summary::before{content:"›";display:inline-block;transition:transform .15s}
+details.draft[open]>summary::before{transform:rotate(90deg)}
+.dbody{padding:0 10px 10px;display:grid;gap:8px}
+.dtext{white-space:pre-wrap;font-size:14px;line-height:1.55;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-wrap:anywhere}
+.dnote{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.dnote b{color:var(--fg);font-weight:500}
+.dsrc{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px}
+.drow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* Jira ticket */
+.jira{font-family:var(--mono);font-size:12px;font-weight:500;padding:2px 8px;border-radius:4px;background:var(--idle-bg);color:var(--accent);text-decoration:none;white-space:nowrap}
+.jira:hover{text-decoration:underline}
+.jform{margin-top:6px;border:1px solid var(--line);border-radius:6px;background:var(--draft-bg);padding:10px;display:grid;gap:8px}
+.jform label{font-size:12px;font-weight:500;color:var(--muted);display:grid;gap:3px}
+.jform input,.jform select,.jform textarea{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);min-width:0;width:100%;box-sizing:border-box}
+.jform textarea{font-family:var(--mono);font-size:12px;line-height:1.5;min-height:160px;resize:vertical}
+.jgrid{display:grid;grid-template-columns:140px 1fr;gap:8px}
+@media (max-width:520px){.jgrid{grid-template-columns:1fr}}
+.jmsg{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.jmsg.err{color:var(--bad)}
+/* Ask Claude */
+.ask{margin-top:6px;border:1px solid var(--line);border-radius:6px;background:var(--draft-bg);padding:8px 10px;display:grid;gap:6px}
+.ask textarea{font:inherit;font-size:13.5px;line-height:1.5;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);width:100%;box-sizing:border-box;min-height:70px;resize:vertical}
+.ahead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:12px;color:var(--muted)}
+.ahead b{color:var(--fg);font-weight:500;font-size:12.5px}
+.atext{font-size:13.5px;overflow-wrap:anywhere;white-space:pre-wrap}
+.ares{font-size:13px;overflow-wrap:anywhere;white-space:pre-wrap;border-left:2px solid var(--line);padding-left:8px}
+.st{font-family:var(--mono);font-size:10.5px;font-weight:500;padding:1px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.03em}
+.st-pending{background:var(--warn-bg);color:var(--warn)}
+.st-done{background:var(--ok-bg);color:var(--ok)}
+.st-needs_you{background:var(--bad-bg);color:var(--bad)}
+.st-running{background:var(--draft-bg);color:var(--accent);border:1px solid var(--accent)}
+.st-cancelled{background:var(--idle-bg);color:var(--idle)}
+@media (prefers-reduced-motion:no-preference){button{transition:background .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="hrow">
+      <h1>{{PAGE_TITLE}}</h1>
+      <div class="meta" id="lastrun">Waiting for the first sync…</div>
+    </div>
+    <div class="scope">What Slack, email and Jira still need from you on {{SCOPE_SHORT}}. Synced every hour on weekdays, {{HOURS}}. When someone asks you a question, a researched draft reply is attached to the item. Use “Ask Claude” on any to-do to hand it an instruction (e.g. “ask Bob for the link”, “prepare the draft in the thread”) — Claude starts on it right away (if it can't be started, it runs at the next hourly sync). “{{JIRA_PROJECT}} ticket” files the to-do in Jira's {{JIRA_PROJECT}} project.</div>
+  </header>
+
+  <section>
+    <div class="shead"><h2 id="openhead">Needs you</h2></div>
+    <div class="list" id="open"><div class="empty">Loading your open items…</div></div>
+  </section>
+
+  <section class="done">
+    <div class="shead">
+      <h2 id="donehead">Done</h2>
+      <div class="filters" role="group" aria-label="Filter done items">
+        <button class="chip" id="f-all" data-f="all" aria-pressed="true">All</button>
+        <button class="chip" id="f-fyi" data-f="fyi" aria-pressed="false">Answered (FYI)</button>
+        <button class="chip" id="f-closed" data-f="closed" aria-pressed="false">Closed</button>
+        <button class="chip" id="f-scope" data-f="scope" aria-pressed="false">Not mine</button>
+        <input id="q" type="search" placeholder="Search done items" aria-label="Search done items">
+      </div>
+    </div>
+    <div class="list" id="done"><div class="empty">Resolved items land here and stay as a permanent log.</div></div>
+    <div class="more"><button id="more" hidden>Show all</button></div>
+  </section>
+
+  <section class="done">
+    <details id="archbox">
+      <summary class="arch"><span id="archhead">Archive</span></summary>
+      <div class="scope" id="archnote" style="margin:8px 0 10px"></div>
+      <div class="list" id="arch"></div>
+    </details>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=t=>{if(!t)return"";const d=new Date(t);return d.toLocaleString([],{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
+const day=t=>{if(!t)return"";return new Date(t).toLocaleDateString([],{day:"numeric",month:"short"})};
+const SRC={slack:"Slack",email:"Email",jira:"Jira"};
+const JIRA_SITE="https://{{JIRA_HOST}}";
+const JIRA_PROJECT="{{JIRA_PROJECT}}";
+const OWNER="{{OWNER_FIRST_NAME}}";
+let db=null, mcp=null, items=[], busy=new Set(), filter="all", showAll=false, openDrafts=new Set();
+// Jira form state per item: {type, summary, desc, sending, msg, err}
+const jforms=new Map();
+// Ask-Claude form state per item: {text, sending, err}
+const asks=new Map();
+try{openDrafts=new Set(JSON.parse(sessionStorage.getItem("openDrafts")||"[]"))}catch(e){}
+
+function srcLink(i){return i.url?`<a href="${esc(i.url)}" target="_blank" rel="noopener">${SRC[i.source]||"Link"}</a>`:""}
+function ticketOf(i){
+  if(i.jiraKey) return {key:i.jiraKey,url:i.jiraUrl||`${JIRA_SITE}/browse/${i.jiraKey}`};
+  const m=i.source==="jira"&&new RegExp("^"+JIRA_PROJECT+"(\\d+)$").exec(i.id);
+  if(m) return {key:JIRA_PROJECT+"-"+m[1],url:i.url||`${JIRA_SITE}/browse/${JIRA_PROJECT}-${m[1]}`};
+  return null;
+}
+function ticketLink(i){const t=ticketOf(i);return t?`<a class="jira" href="${esc(t.url)}" target="_blank" rel="noopener" title="Open in Jira">${esc(t.key)} ↗</a>`:""}
+function doneKind(i){
+  if(i.fyi) return ["FYI","k-fyi"];
+  if(i.outOfScope) return ["Not mine","k-scope"];
+  return ["Done","k-done"];
+}
+function archiveCutoff(){
+  const d=new Date(); d.setHours(0,0,0,0);
+  const sinceMon=(d.getDay()+6)%7; d.setDate(d.getDate()-sinceMon-7); return d;
+}
+function guessType(i){
+  const t=(i.title||"")+" "+(i.why||"");
+  if(/\b(fail|fails|failing|error|bug|broken|stuck|not cancellable|422|500|exception|sentry)\b/i.test(t)) return "Bug";
+  if(/^(implement|build|add|support|enable)\b/i.test(i.title||"")) return "Story";
+  return "Task";
+}
+function defaultDesc(i){
+  const L=[];
+  L.push("## Context", i.why||"(add context)", "");
+  L.push("## Source", `Requested by ${i.requester||"?"} via ${SRC[i.source]||"link"}: ${i.url||"(no link)"}`, "");
+  if(i.draft){L.push("## Proposed answer / approach (draft)", i.draft, "");}
+  if(i.draftNotes){L.push("## Open points", i.draftNotes, "");}
+  L.push("## Acceptance criteria", "- [ ] (define)", "");
+  const srcs=Array.isArray(i.draftSources)?i.draftSources.filter(s=>s&&s.url):[];
+  if(srcs.length){L.push("## Related", ...srcs.map(s=>`- ${s.label||"link"}: ${s.url}`));}
+  return L.join("\n").trim();
+}
+function jformBlock(i){
+  const f=jforms.get(i.id); if(!f) return "";
+  const dis=f.sending?" disabled":"";
+  return `<div class="jform" data-jform="${esc(i.id)}">
+    <div class="jgrid">
+      <label>Type<select data-jf="type"${dis}>${["Task","Bug","Story"].map(t=>`<option${t===f.type?" selected":""}>${t}</option>`).join("")}</select></label>
+      <label>Summary<input data-jf="summary" maxlength="250" value="${esc(f.summary)}"${dis}></label>
+    </div>
+    <label>Description (Markdown)<textarea data-jf="desc"${dis}>${esc(f.desc)}</textarea></label>
+    <div class="drow">
+      <button class="small primary" data-jact="create" data-id="${esc(i.id)}"${dis}>${f.sending?"Creating…":"Create in "+JIRA_PROJECT}</button>
+      <button class="small" data-jact="cancel" data-id="${esc(i.id)}"${dis}>Cancel</button>
+      <span class="jmsg${f.err?" err":""}">${f.msg?f.msg:"Project "+JIRA_PROJECT+" · unassigned"}</span>
+    </div></div>`;
+}
+const ST={pending:"Queued",running:"In progress",done:"Done",needs_you:"Needs you",cancelled:"Cancelled"};
+const TRIGGER_ID="{{TRIGGER_ID}}";
+// Per-item state of the "start Claude now" call: {state:"starting"|"started"|"failed", msg}
+const fires=new Map();
+function pendingNote(i){
+  const ins=i.instruction, f=fires.get(i.id);
+  const asked=`asked ${fmt(ins.requestedAt)} · `;
+  if(f&&f.state==="starting") return asked+"starting Claude now…";
+  if(f&&f.state==="failed") return asked+f.msg;
+  if(ins.firedAt) return asked+`Claude was started ${fmt(ins.firedAt)} — usually done within a few minutes`;
+  return asked+"runs at the next hourly sync";
+}
+function fireErr(e){
+  switch(e&&e.code){
+    case "needs_reauth": return "couldn't start Claude now (reconnect Claude Code Remote in claude.ai Settings → Connectors) — it runs at the next hourly sync";
+    case "server_not_connected": case "selection_required": return "couldn't start Claude now (Claude Code Remote isn't available in this view) — it runs at the next hourly sync";
+    case "not_in_manifest": case "approval_required": case "consent_required": return "starting Claude now wasn't allowed for this page (allow Claude Code Remote in the page's Permissions menu) — it runs at the next hourly sync";
+    case "blocked_by_policy": return "your organization blocks starting Claude from here — it runs at the next hourly sync";
+    case "server_unavailable": case "upstream_error": case "cancelled": return "Claude may or may not have started — if nothing happens in a few minutes, it runs at the next hourly sync";
+    case "tool_error": return "couldn't start Claude now ("+(e.message||"error")+") — it runs at the next hourly sync";
+    default: return "couldn't start Claude now ("+(e&&e.code||"error")+") — it runs at the next hourly sync";
+  }
+}
+async function fireNow(id){
+  if(!TRIGGER_ID||TRIGGER_ID.startsWith("{{")){fires.set(id,{state:"failed",msg:"no scheduled task is linked to this page yet — it runs at the next sync"});render();return}
+  if(!mcp){fires.set(id,{state:"failed",msg:"couldn't start Claude from this view — it runs at the next hourly sync"});render();return}
+  fires.set(id,{state:"starting"});render();
+  try{
+    await mcp.callTool("Claude Code Remote","fire_trigger",{trigger_id:TRIGGER_ID,
+      text:`Started from the "Ask Claude" button on the to-do list (item ${id}). INSTRUCTION-ONLY RUN: do steps 1-3 only (load tools, read items, claim and carry out every pending instruction, check watches), then send step 9's notification for what you did. Skip the scan (steps 4-7) and do NOT write meta/run - lastSync stays with the hourly run. Reply in one line.`},{cache:false});
+    fires.set(id,{state:"started"});
+    const it=items.find(x=>x.id===id);
+    if(db&&it&&it.instruction&&it.instruction.status==="pending"){
+      try{await db.doc("items/"+id).update({instruction:{...it.instruction,firedAt:new Date().toISOString()}})}catch(e){}
+    }
+  }catch(e){fires.set(id,{state:"failed",msg:fireErr(e)})}
+  render();
+}
+function askBlock(i){
+  const ins=i.instruction, f=asks.get(i.id);
+  let out="";
+  if(ins&&ins.text){
+    const st=ins.status||"pending";
+    const when=st==="pending"?pendingNote(i):st==="running"?"Claude is working on it":(ins.doneAt?fmt(ins.doneAt):"");
+    out+=`<div class="ask"><div class="ahead"><b>Your instruction</b><span class="st st-${esc(st)}">${esc(ST[st]||st)}</span><span>${esc(when)}</span></div>
+      <div class="atext">${esc(ins.text)}</div>
+      ${ins.result?`<div class="ares">${esc(ins.result)}${ins.resultUrl?` · <a href="${esc(ins.resultUrl)}" target="_blank" rel="noopener">Open</a>`:""}</div>`:""}
+      ${st==="pending"&&!f?`<div class="drow"><button class="small" data-aact="cancel" data-id="${esc(i.id)}">Cancel</button></div>`:""}
+    </div>`;
+  }
+  if(f){
+    const dis=f.sending?" disabled":"";
+    out+=`<div class="ask" data-askform="${esc(i.id)}">
+      <label class="ahead" for="ask-${esc(i.id)}"><b>Tell Claude what to do</b><span>e.g. “ask Felix for the ETA”, “post the draft in the thread”, “dig into the logs”</span></label>
+      <textarea id="ask-${esc(i.id)}" data-ask="${esc(i.id)}"${dis}>${esc(f.text)}</textarea>
+      <div class="drow"><button class="small primary" data-aact="send" data-id="${esc(i.id)}"${dis}>${f.sending?"Saving…":"Queue for Claude"}</button>
+      <button class="small" data-aact="close" data-id="${esc(i.id)}"${dis}>Cancel</button>
+      ${f.err?`<span class="jmsg err">${esc(f.err)}</span>`:`<span class="jmsg">Claude starts on it as soon as you queue it.</span>`}</div></div>`;
+  }
+  return out;
+}
+function draftBlock(i){
+  if(!i.draft) return "";
+  const srcs=Array.isArray(i.draftSources)?i.draftSources.filter(s=>s&&s.url):[];
+  return `<details class="draft" data-draft="${esc(i.id)}"${openDrafts.has(i.id)?" open":""}>
+    <summary>Draft reply${i.draftUpdatedAt?` <span class="dnote">· ${fmt(i.draftUpdatedAt)}</span>`:""}</summary>
+    <div class="dbody">
+      <div class="dtext" id="dt-${esc(i.id)}">${esc(i.draft)}</div>
+      ${i.draftNotes?`<div class="dnote"><b>Check before sending:</b> ${esc(i.draftNotes)}</div>`:""}
+      ${srcs.length?`<div class="dsrc">Based on: ${srcs.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label||"source")}</a>`).join("")}</div>`:""}
+      <div class="drow"><button class="small" data-copy="${esc(i.id)}">Copy draft</button>${i.url?`<a href="${esc(i.url)}" target="_blank" rel="noopener" style="font-size:13px">Open thread to reply</a>`:""}</div>
+    </div></details>`;
+}
+function row(i){
+  const [label,cls]=doneKind(i);
+  const dis=busy.has(i.id)?" disabled":"";
+  const by=i.answeredBy?` · answered by ${esc(i.answeredBy)}`:"";
+  return `<div class="item"><span class="kind ${cls}">${label}</span>
+    <div class="body"><div class="what">${esc(i.title)}</div>
+    ${i.resolution?`<div class="why">${esc(i.resolution)}</div>`:""}
+    <div class="sub">${esc(i.requester)}${by} · ${srcLink(i)}${i.closedAt?` · ${day(i.closedAt)}`:""}</div></div>
+    <div class="actions">${ticketLink(i)}<button class="link" data-id="${esc(i.id)}" data-act="reopen"${dis}>Reopen</button></div></div>`;
+}
+function render(){
+  const ae=document.activeElement;
+  const keep=ae&&ae.dataset&&(ae.dataset.jf||ae.dataset.ask)?{jid:ae.closest("[data-jform]")?.dataset.jform,f:ae.dataset.jf,ask:ae.dataset.ask,s:ae.selectionStart,e:ae.selectionEnd}:null;
+  const rank=i=>i.fyi?2:i.urgent?0:1;
+  const open=items.filter(i=>i.status==="open").sort((a,b)=>rank(a)-rank(b)||(rank(a)===2?(b.updatedAt||"").localeCompare(a.updatedAt||""):(a.createdAt||"").localeCompare(b.createdAt||"")));
+  const urgent=open.filter(i=>i.urgent&&!i.fyi).length, fyi=open.filter(i=>i.fyi).length;
+  const queued=open.filter(i=>i.instruction&&(i.instruction.status==="pending"||i.instruction.status==="running")).length;
+  $("openhead").textContent=`Needs you · ${open.length-fyi}${urgent?` (${urgent} urgent)`:""}${fyi?` · ${fyi} FYI`:""}${queued?` · ${queued} queued for Claude`:""}`;
+  const box=$("open");
+  box.innerHTML=open.length?open.map((i,ix)=>{
+    const [label,cls]=i.fyi?["FYI","k-fyi"]:i.urgent?["Urgent","k-urgent"]:["To-do","k-todo"];
+    const dis=busy.has(i.id)?" disabled":"";
+    const first=i.fyi&&(ix===0||!open[ix-1].fyi);
+    const note=i.fyi?(i.resolution||i.why):i.why;
+    const by=i.fyi&&i.answeredBy?` · answered by ${esc(i.answeredBy)}`:"";
+    const tk=ticketOf(i);
+    const jbtn=tk?ticketLink(i):(mcp&&!jforms.has(i.id)?`<button data-id="${esc(i.id)}" data-jact="open"${dis} title="Create a Jira ticket in ${JIRA_PROJECT} for this to-do">${JIRA_PROJECT} ticket</button>`:"");
+    const pending=i.instruction&&(i.instruction.status==="pending"||i.instruction.status==="running");
+    const abtn=(db&&!asks.has(i.id)&&!pending)?`<button data-id="${esc(i.id)}" data-aact="open"${dis} title="Give Claude an instruction for this to-do">Ask Claude</button>`:"";
+    const btns=i.fyi?`<button data-id="${esc(i.id)}" data-act="done"${dis}>Done</button>`
+      :`<button class="primary" data-id="${esc(i.id)}" data-act="done"${dis}>Done</button><button data-id="${esc(i.id)}" data-act="scope"${dis}>Not mine</button>${abtn}${jbtn}`;
+    return `${first?'<div class="fyisep">Already answered · FYI</div>':""}<div class="item${i.fyi?" fyi":""}"><span class="kind ${cls}">${label}</span>
+      <div class="body"><div class="what">${esc(i.title)}</div>
+      ${note?`<div class="why">${esc(note)}</div>`:""}
+      <div class="sub">Requested by ${esc(i.requester)}${by} · ${srcLink(i)}${i.createdAt?` · added ${fmt(i.createdAt)}`:""}</div>
+      ${i.fyi?"":askBlock(i)}
+      ${i.fyi?"":jformBlock(i)}
+      ${i.fyi?"":draftBlock(i)}</div>
+      <div class="actions">${btns}</div></div>`}).join("")
+    :'<div class="empty">You\'re all caught up. New questions appear here after each hourly sync.</div>';
+
+  const cut=archiveCutoff();
+  const doneAll=items.filter(i=>i.status==="done").sort((a,b)=>(b.closedAt||"").localeCompare(a.closedAt||""));
+  const all=doneAll.filter(i=>!i.closedAt||new Date(i.closedAt)>=cut);
+  const old=doneAll.filter(i=>i.closedAt&&new Date(i.closedAt)<cut);
+  $("archhead").textContent=`Archive · ${old.length}`;
+  $("archnote").textContent=`Done before ${cut.toLocaleDateString([],{weekday:"short",day:"numeric",month:"short"})}. Done keeps this week and last week; older items move here automatically every Monday.`;
+  $("arch").innerHTML=old.length?old.map(row).join(""):'<div class="empty">Nothing archived yet.</div>';
+  const q=$("q").value.trim().toLowerCase();
+  const done=all.filter(i=>filter==="all"||(filter==="fyi"&&i.fyi)||(filter==="scope"&&i.outOfScope)||(filter==="closed"&&!i.fyi&&!i.outOfScope))
+    .filter(i=>!q||[i.title,i.why,i.requester,i.answeredBy,i.resolution,i.jiraKey].join(" ").toLowerCase().includes(q));
+  $("donehead").textContent=`Done · ${all.length}`;
+  const shown=showAll?done:done.slice(0,15);
+  $("done").innerHTML=shown.length?shown.map(row).join("")
+    :'<div class="empty">Nothing matches.</div>';
+  $("more").hidden=showAll||done.length<=15;
+  $("more").textContent=`Show all ${done.length}`;
+  document.querySelectorAll("button[data-act]").forEach(b=>b.onclick=()=>act(b.dataset.id,b.dataset.act));
+  document.querySelectorAll("button[data-jact]").forEach(b=>b.onclick=()=>jact(b.dataset.id,b.dataset.jact));
+  document.querySelectorAll("button[data-aact]").forEach(b=>b.onclick=()=>aact(b.dataset.id,b.dataset.aact));
+  document.querySelectorAll("textarea[data-ask]").forEach(el=>el.oninput=()=>{const f=asks.get(el.dataset.ask);if(f)f.text=el.value});
+  document.querySelectorAll("[data-jform] [data-jf]").forEach(el=>el.oninput=el.onchange=()=>{
+    const f=jforms.get(el.closest("[data-jform]").dataset.jform); if(!f)return;
+    f[el.dataset.jf]=el.value;
+  });
+  if(keep){
+    const el=keep.ask?document.querySelector(`textarea[data-ask="${CSS.escape(keep.ask)}"]`)
+      :keep.jid?document.querySelector(`[data-jform="${CSS.escape(keep.jid)}"] [data-jf="${keep.f}"]`):null;
+    if(el){el.focus();try{el.setSelectionRange(keep.s,keep.e)}catch(e){}}
+  }
+  document.querySelectorAll("details[data-draft]").forEach(d=>d.ontoggle=()=>{
+    d.open?openDrafts.add(d.dataset.draft):openDrafts.delete(d.dataset.draft);
+    try{sessionStorage.setItem("openDrafts",JSON.stringify([...openDrafts]))}catch(e){}
+  });
+  document.querySelectorAll("button[data-copy]").forEach(b=>b.onclick=async()=>{
+    const it=items.find(x=>x.id===b.dataset.copy); if(!it)return;
+    try{await navigator.clipboard.writeText(it.draft);b.textContent="Copied"}
+    catch(e){const r=document.createRange();r.selectNodeContents($("dt-"+it.id));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected — press Ctrl/Cmd+C"}
+    setTimeout(()=>b.textContent="Copy draft",2000);
+  });
+}
+async function aact(id,a){
+  const it=items.find(x=>x.id===id); if(!it||!db)return;
+  if(a==="open"){asks.set(id,{text:"",sending:false,err:""});render();const el=document.querySelector(`textarea[data-ask="${CSS.escape(id)}"]`);el&&el.focus();return}
+  if(a==="close"){asks.delete(id);render();return}
+  const now=new Date().toISOString();
+  if(a==="cancel"){
+    try{await db.doc("items/"+id).update({instruction:{...it.instruction,status:"cancelled",doneAt:now,result:"Cancelled by "+OWNER+" before it ran"},updatedAt:now})}
+    catch(e){$("lastrun").textContent="Couldn't cancel ("+(e.code||"error")+"). Try again.";$("lastrun").className="meta err"}
+    return;
+  }
+  if(a!=="send")return;
+  const f=asks.get(id); if(!f||f.sending)return;
+  const text=f.text.trim(); if(!text){f.err="Write an instruction first.";render();return}
+  f.sending=true;f.err="";render();
+  const patch={instruction:{text,status:"pending",requestedAt:now},updatedAt:now};
+  if(it.instruction&&it.instruction.text) patch.instructionHistory=[...(Array.isArray(it.instructionHistory)?it.instructionHistory:[]),it.instruction].slice(-20);
+  try{await db.doc("items/"+id).update(patch);asks.delete(id);fires.delete(id);render()}
+  catch(e){f.sending=false;f.err="Couldn't save ("+(e.code||"error")+"). Try again.";render();return}
+  fireNow(id);
+}
+function findKey(res){
+  const p=res&&res.payload;
+  const cand=[p&&p.issues&&p.issues.nodes&&p.issues.nodes[0]&&p.issues.nodes[0].key,p&&p.key,p&&p.issue&&p.issue.key,p&&p.data&&p.data.key];
+  for(const c of cand) if(typeof c==="string"&&new RegExp("^"+JIRA_PROJECT+"-\\d+$").test(c)) return c;
+  const txt=typeof p==="string"?p:JSON.stringify(p??res?.content??"");
+  const m=new RegExp("\\b"+JIRA_PROJECT+"-\\d+\\b").exec(txt||""); return m?m[0]:null;
+}
+function errText(e){
+  switch(e&&e.code){
+    case "needs_reauth": return "Your Atlassian connection expired. Reconnect Atlassian in claude.ai Settings → Connectors, then try again.";
+    case "server_not_connected": return "Atlassian isn't connected for you. Add it in claude.ai Settings → Connectors.";
+    case "selection_required": return "You have more than one Atlassian connector — pick one in the prompt claude.ai shows, then try again.";
+    case "not_in_manifest": case "approval_required": case "consent_required": return "Jira access wasn't allowed for this page. Allow Atlassian in the page's Permissions menu, then try again.";
+    case "blocked_by_policy": return "Your organization's policy blocks creating Jira issues from here.";
+    case "tool_error": return "Jira refused the ticket: "+esc(e.message||"unknown error");
+    case "server_unavailable": case "upstream_error": case "cancelled":
+      return `Jira didn't confirm in time — the ticket may still have been created. <a href="${JIRA_SITE}/issues/?jql=${encodeURIComponent('project = '+JIRA_PROJECT+' AND reporter = currentUser() AND created >= -15m ORDER BY created DESC')}" target="_blank" rel="noopener">Check your recent ${JIRA_PROJECT} tickets</a> before trying again.`;
+    default: return "Couldn't create the ticket ("+esc(e&&e.code||"error")+").";
+  }
+}
+async function jact(id,a){
+  const it=items.find(x=>x.id===id); if(!it)return;
+  if(a==="open"){jforms.set(id,{type:guessType(it),summary:(it.title||"").slice(0,250),desc:defaultDesc(it),sending:false,msg:"",err:false});render();
+    const el=document.querySelector(`[data-jform="${CSS.escape(id)}"] [data-jf="summary"]`);el&&el.focus();return}
+  if(a==="cancel"){jforms.delete(id);render();return}
+  if(a!=="create")return;
+  const f=jforms.get(id); if(!f||f.sending)return;
+  if(!f.summary.trim()){f.msg="Add a summary first.";f.err=true;render();return}
+  f.sending=true;f.msg="";f.err=false;render();
+  try{
+    const res=await mcp.callTool("Atlassian","createJiraIssue",{
+      cloudId:"{{JIRA_HOST}}",projectKey:JIRA_PROJECT,issueTypeName:f.type,
+      summary:f.summary.trim(),description:f.desc,contentFormat:"markdown"
+    },{cache:false});
+    const key=findKey(res);
+    if(!key){f.sending=false;f.err=true;f.msg=`Jira answered, but no ${JIRA_PROJECT} key came back. <a href="${JIRA_SITE}/issues/?jql=${encodeURIComponent('project = '+JIRA_PROJECT+' AND reporter = currentUser() ORDER BY created DESC')}" target="_blank" rel="noopener">Check ${JIRA_PROJECT}</a>.`;render();return}
+    const now=new Date().toISOString();
+    try{await db.doc("items/"+id).update({jiraKey:key,jiraUrl:`${JIRA_SITE}/browse/${key}`,updatedAt:now})}
+    catch(e){f.sending=false;f.err=true;f.msg=`Created <a href="${JIRA_SITE}/browse/${key}" target="_blank" rel="noopener">${key}</a>, but couldn't save the link on this item.`;render();return}
+    jforms.delete(id);render();
+  }catch(e){f.sending=false;f.err=true;f.msg=errText(e);render()}
+}
+async function act(id,a){
+  if(!db)return; busy.add(id); render();
+  const now=new Date().toISOString();
+  const patch=a==="reopen"?{status:"open",closedAt:"",fyi:false,outOfScope:false,resolution:"",updatedAt:now}
+    :a==="scope"?{status:"done",outOfScope:true,resolution:"Marked not mine by "+OWNER,closedAt:now,updatedAt:now}
+    :items.find(i=>i.id===id)?.fyi?{status:"done",closedAt:now,updatedAt:now}
+    :{status:"done",resolution:"Checked off by "+OWNER,closedAt:now,updatedAt:now};
+  try{await db.doc("items/"+id).update(patch)}
+  catch(e){$("lastrun").textContent="Couldn't save that change ("+(e.code||"error")+"). Try again.";$("lastrun").className="meta err"}
+  busy.delete(id); render();
+}
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{filter=c.dataset.f;document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c)));render()});
+$("q").oninput=render;
+$("more").onclick=()=>{showAll=true;render()};
+(async()=>{
+  db=await window.claude?.use?.("db");
+  if(!db){$("lastrun").textContent="Live data isn't available in this view.";$("open").innerHTML='<div class="empty">Open this page in claude.ai while signed in to see your items.</div>';return}
+  db.collection("items").onSnapshot(s=>{items=s.docs.map(d=>({id:d.id,...d.data()}));render()},()=>{});
+  db.doc("meta/run").onSnapshot(s=>{const r=s.exists?s.data():null;const el=$("lastrun");
+    if(!r){el.textContent="Waiting for the first sync…";el.className="meta";return}
+    el.textContent="Last synced "+fmt(r.lastSync)+(r.error?" · "+r.error:"");el.className="meta"+(r.error?" err":"")},()=>{});
+  window.claude.use("mcp").then(m=>{if(m){mcp=m;render()}}).catch(()=>{});
+})();
+</script>
+
